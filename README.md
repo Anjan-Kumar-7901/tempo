@@ -1,157 +1,137 @@
 # TEMPO
 
-## In sync with your body
+> **In sync with your body**
 
-TEMPO is a private, offline-first period tracking Progressive Web App (PWA) designed to help users track their menstrual cycles, understand patterns, and view simple predictions based on their own data.
+TEMPO is a private, offline-first period tracking Progressive Web App. It helps users log periods, understand cycle patterns, review personal trends, and view locally calculated estimates without creating an account or sending cycle data to an external service.
 
-The application prioritizes privacy by storing all data locally on the device and does not require account creation in the MVP version.
+## Highlights
 
----
+- Private onboarding profile and cycle survey
+- Local 4-digit privacy PIN with Web Crypto hashing
+- Automatic lock after inactivity
+- Period logging with flow, pain, mood, symptoms, and notes
+- Monthly and expanded weekly calendar views
+- Estimated next period, ovulation date, and ovulation window
+- History-based symptom and cycle insights
+- Interactive trend charts
+- Editable period history
+- Installable offline PWA
+- Responsive mobile-first interface
 
-## Features
+## Privacy
 
-### Cycle Tracking
+All profile details, survey answers, settings, and period logs are stored locally in IndexedDB on the user's device.
 
-* Log period start and end dates
-* View period history
-* Edit and delete entries
-* Track cycle duration
+TEMPO does not use:
 
-### Predictions
+- Cloud accounts
+- External period-tracking APIs
+- Analytics or advertising trackers
+- Raw PIN storage
 
-* Next period estimate
-* Average cycle length
-* Average period duration
-* Current cycle day
+Predictions are estimates based on user-entered history. They are not medical advice and should not be used for contraception guidance.
 
-### Insights
+## Technology
 
-* Cycle trends
-* Duration trends
-* Symptom frequency
-* Period history analytics
-
-### Privacy
-
-* Local-only data storage
-* Offline-first architecture
-* 4-digit PIN protection
-* No cloud sync in MVP
-* No third-party period tracking APIs
-
-### PWA
-
-* Installable on mobile devices
-* Works offline
-* Responsive design
-* Optimized for iOS and Android
-
----
-
-## Tech Stack
-
-### Frontend
-
-* React
-* Vite
-* Tailwind CSS
-
-### State Management
-
-* Zustand
-
-### Storage
-
-* IndexedDB
-* Dexie.js
-
-### Date Calculations
-
-* date-fns
-
-### Charts
-
-* Recharts
-
-### PWA
-
-* vite-plugin-pwa
-
-### Deployment
-
-* Vercel
-
----
+| Area | Technology |
+| --- | --- |
+| Interface | React 19, Vite, Tailwind CSS |
+| State | Zustand |
+| Local storage | Dexie, IndexedDB |
+| Date calculations | date-fns |
+| Charts | Recharts |
+| Offline support | vite-plugin-pwa, Workbox |
+| Hosting | Vercel |
 
 ## Project Structure
 
+```text
 src/
+  components/   Reusable interface components
+  db/           Dexie database configuration
+  pages/        Application screens
+  store/        Zustand application store
+  utils/        Cycle calculations and PIN utilities
+test/           Calculation and validation tests
+public/icons/   Favicons, PWA icons, and Apple touch icon
+```
 
-* components/
-* pages/
-* db/
-* store/
-* utils/
+## Local Development
 
----
+Requirements:
 
-## Getting Started
+- Node.js 20 or newer
+- npm
 
-### Clone Repository
+Install dependencies and start Vite:
 
-git clone https://github.com/your-username/tempo.git
-
-cd tempo
-
-### Install Dependencies
-
+```bash
 npm install
-
-### Run Development Server
-
 npm run dev
+```
 
-### Build Production
+Create and preview a production build:
 
+```bash
 npm run build
-
-### Preview Production Build
-
 npm run preview
+```
 
----
+## Quality Checks
 
-## Privacy Notice
+```bash
+npm run lint
+npm test
+npm run build
+```
 
-TEMPO stores user data locally on the device.
+## PWA Support
 
-Predictions are generated using cycle history and are estimates only.
+The production build generates:
 
-TEMPO is not a medical device and should not be used for medical diagnosis, fertility treatment decisions, or contraception planning.
+- Web app manifest
+- Offline service worker
+- Precached application shell
+- Standard and maskable `192x192` and `512x512` icons
+- Safari `180x180` Apple touch icon
 
----
+The app works offline after its first successful production visit.
 
-## Roadmap
+## Deploying to Vercel
 
-### MVP
+### Vercel Dashboard
 
-* PIN protection
-* Cycle tracking
-* Period predictions
-* Calendar
-* Insights
+1. Import the GitHub repository into Vercel.
+2. Select the **Vite** framework preset.
+3. Vercel will use the settings in `vercel.json`.
+4. Deploy the project.
 
-### Future Versions
+### Vercel CLI
 
-* Cloud backup
-* Email authentication
-* Mobile authentication
-* Multi-device sync
-* Export reports
-* Advanced cycle insights
+```bash
+npx vercel
+npx vercel --prod
+```
 
----
+Deployment configuration:
 
-## License
+- Build command: `npm run build`
+- Output directory: `dist`
+- Node.js: `20+`
+- SPA routes rewrite to `index.html`
+- Service worker and manifest use revalidation headers
+- Icon assets use long-lived immutable caching
 
-MIT License
+## Available Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Generate the production PWA |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run automated tests |
+
+## Disclaimer
+
+TEMPO is not a medical device. Cycle, period, ovulation, fertile-window, and symptom information displayed by the app is estimated from locally entered data.
