@@ -6,7 +6,7 @@ const symptoms = ['Cramps', 'Headache', 'Bloating', 'Acne', 'Tiredness', 'Back p
 const blank = { startDate: '', endDate: '', flow: '', painLevel: null, mood: '', symptoms: [], notes: '' }
 
 export default function PeriodForm({ initial, onSubmit, overlapping }) {
-  const [form, setForm] = useState(initial || blank)
+  const [form, setForm] = useState({ ...blank, ...initial, symptoms: initial?.symptoms || [] })
   const [error, setError] = useState('')
   const set = (key, value) => setForm((current) => ({ ...current, [key]: value }))
   const toggle = (item) => set('symptoms', form.symptoms.includes(item) ? form.symptoms.filter((value) => value !== item) : [...form.symptoms, item])

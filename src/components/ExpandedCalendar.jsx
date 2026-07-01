@@ -57,7 +57,7 @@ function getExpectedPatterns(selected, logs, stats) {
   const relevantLogs = logs.filter((log) => {
     if (actualLog) return log.id === actualLog.id
     if (isPeriodPhase) return differenceInCalendarDays(new Date(`${log.endDate}T00:00:00`), new Date(`${log.startDate}T00:00:00`)) + 1 >= periodDay
-    return isOvulationPhase ? log.symptoms.length > 0 || log.mood : false
+    return isOvulationPhase ? (log.symptoms || []).length > 0 || log.mood : false
   })
   const symptomCounts = {}
   relevantLogs.flatMap((log) => log.symptoms || []).forEach((symptom) => { symptomCounts[symptom] = (symptomCounts[symptom] || 0) + 1 })

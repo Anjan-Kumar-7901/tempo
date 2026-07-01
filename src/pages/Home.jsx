@@ -14,7 +14,9 @@ export default function Home() {
   const [profileOpen, setProfileOpen] = useState(false)
   const { logs, settings } = useAppStore()
   const stats = getStats(logs, settings)
-  const dayText = stats.daysUntil === 0
+  const dayText = stats.daysUntil === null
+    ? 'Log a period to start estimates'
+    : stats.daysUntil === 0
     ? 'Expected today'
     : stats.daysUntil > 0
       ? `${stats.daysUntil} days to go`

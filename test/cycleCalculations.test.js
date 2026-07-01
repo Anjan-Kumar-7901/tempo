@@ -29,6 +29,13 @@ test('one log falls back to the entered cycle length', () => {
   assert.equal(getStats([logs[0]], settings).averageCycleLength, 28)
 })
 
+test('empty history does not produce a misleading countdown', () => {
+  const stats = getStats([], settings)
+  assert.equal(stats.nextStart, null)
+  assert.equal(stats.daysUntil, null)
+  assert.equal(stats.currentCycleDay, null)
+})
+
 test('overlapping logs are rejected while the edited log is ignored', () => {
   assert.equal(overlapsLog({ startDate: '2026-01-04', endDate: '2026-01-07' }, logs), true)
   assert.equal(overlapsLog({ startDate: '2026-01-01', endDate: '2026-01-05' }, logs, 'a'), false)
