@@ -20,10 +20,12 @@ export default function DatePicker({ value, onChange, placeholder = 'Choose a da
   const select = (day) => {
     setPending(day)
   }
-  const add = () => {
+  const add = (event) => {
+    event?.preventDefault()
+    event?.stopPropagation()
     if (!pending) return
-    onChange(format(pending, 'yyyy-MM-dd'))
     setOpen(false)
+    onChange(format(pending, 'yyyy-MM-dd'))
   }
   const close = (event) => {
     event?.preventDefault()
@@ -38,7 +40,7 @@ export default function DatePicker({ value, onChange, placeholder = 'Choose a da
       <div className="date-picker-month"><button type="button" onClick={() => setMonth(subMonths(month, 1))}>&lsaquo;</button><strong>{format(month, 'MMMM yyyy')}</strong><button type="button" onClick={() => setMonth(addMonths(month, 1))}>&rsaquo;</button></div>
       <div className="date-picker-grid weekdays">{['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => <span key={`${day}${index}`}>{day}</span>)}</div>
       <div className="date-picker-grid">{days.map((day) => <button type="button" key={day.toISOString()} className={[!isSameMonth(day, month) ? 'muted' : '', activeDate && isSameDay(day, activeDate) ? 'selected' : '', isSameDay(day, new Date()) ? 'today' : ''].join(' ')} onClick={() => select(day)}>{format(day, 'd')}</button>)}</div>
-      <footer><button type="button" className="button secondary" onClick={close}>Close</button><button type="button" className="button primary" disabled={!pending} onClick={add}>Log</button></footer>
+      <footer><button type="button" className="button secondary" onPointerDown={close} onClick={close}>Close</button><button type="button" className="button primary" disabled={!pending} onPointerDown={add} onClick={(event) => { if (event.detail === 0) add(event) }}>Log</button></footer>
     </section></div>}
   </>
 }
