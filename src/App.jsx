@@ -10,6 +10,8 @@ import LogPeriod from './pages/LogPeriod'
 import Insights from './pages/Insights'
 import History from './pages/History'
 import Onboarding from './pages/Onboarding'
+import SafeView from './pages/SafeView'
+import Library from './pages/Library'
 
 const LOCK_AFTER_MS = 5 * 60 * 1000
 
@@ -70,6 +72,8 @@ function App() {
           <Route path="/calendar" element={<Navigate to="/home" replace />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/history" element={<History />} />
+          <Route path="/safe-view" element={<SafeView />} />
+          <Route path="/library" element={<Library />} />
           <Route path="/settings" element={<Navigate to="/home" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

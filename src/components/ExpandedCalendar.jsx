@@ -3,10 +3,10 @@ import {
   addDays, differenceInCalendarDays, eachDayOfInterval, endOfWeek, format,
   isSameDay, startOfWeek,
 } from 'date-fns'
-import { getStats, isWithin } from '../utils/cycleCalculations'
+import { getCyclePhase, getStats, isWithin } from '../utils/cycleCalculations'
 import { Icon } from './Icons'
 
-function getDayStatus(selected, logs, stats) {
+function getDayStatus(selected, logs, settings, stats) {
   const actualLog = logs.find((log) => isWithin(selected, new Date(`${log.startDate}T00:00:00`), new Date(`${log.endDate}T00:00:00`)))
   if (actualLog) {
     return {
@@ -37,7 +37,17 @@ function getDayStatus(selected, logs, stats) {
     }
   }
   if (isWithin(selected, stats.fertileStart, stats.ovulation)) {
-    return { tone: 'fertile', eyebrow: 'Prediction', title: 'Estimated fertile window', detail: 'Do not use this estimate for contraception guidance' }
+    return { tone: 'fertile', eyebrow: 'Prediction', title: 'Estimated fertile window', detail: `${stats.fertileConfidence.label} confidence. Do not use this estimate for contraception guidance` }
+  }
+  if (isWithin(selected, stats.pmsStart, stats.pmsEnd)) {
+    return { tone: 'pms', eyebrow: 'Prediction', title: 'Predicted PMS day', detail: `Estimated PMS window is ${format(stats.pmsStart, 'MMMM d')} to ${format(stats.pmsEnd, 'MMMM d')}` }
+  }
+  const phase = getCyclePhase(selected, logs, settings)
+  if (phase.key === 'follicular') {
+    return { tone: 'follicular', eyebrow: 'Estimated phase', title: 'Follicular phase', detail: 'The part of the cycle after bleeding and before the fertile window' }
+  }
+  if (phase.key === 'luteal') {
+    return { tone: 'luteal', eyebrow: 'Estimated phase', title: 'Luteal phase', detail: 'The part of the cycle after ovulation and before the PMS estimate' }
   }
   const days = stats.nextStart ? differenceInCalendarDays(stats.nextStart, selected) : null
   if (days === 0) return { tone: 'period', eyebrow: 'Predicted period', title: 'Expected today', detail: 'Estimated from your cycle history' }
@@ -85,7 +95,7 @@ export default function ExpandedCalendar({ logs, settings, onClose, initialDate 
   const [selected, setSelected] = useState(initialDate)
   const stats = getStats(logs, settings)
   const week = eachDayOfInterval({ start: startOfWeek(selected, { weekStartsOn: 0 }), end: endOfWeek(selected, { weekStartsOn: 0 }) })
-  const status = getDayStatus(selected, logs, stats)
+  const status = getDayStatus(selected, logs, settings, stats)
   const patterns = getExpectedPatterns(selected, logs, stats)
   const actual = (day) => logs.some((log) => isWithin(day, new Date(`${log.startDate}T00:00:00`), new Date(`${log.endDate}T00:00:00`)))
 
@@ -107,9 +117,10 @@ export default function ExpandedCalendar({ logs, settings, onClose, initialDate 
       <div className="expanded-week">{week.map((day) => {
         const ovulationOffset = stats.ovulation ? differenceInCalendarDays(day, stats.ovulation) : null
         const nearOvulation = ovulationOffset !== null && ovulationOffset >= -2 && ovulationOffset <= 2
-        const classes = ['week-day', isSameDay(day, selected) ? 'selected' : '', isSameDay(day, new Date()) ? 'is-today' : '', actual(day) ? 'is-logged' : '', isWithin(day, stats.nextStart, stats.nextEnd) ? 'is-predicted' : '', nearOvulation ? 'is-ovulation-window' : ''].join(' ')
+        const phase = getCyclePhase(day, logs, settings)
+        const classes = ['week-day', `phase-${phase.key}`, isSameDay(day, selected) ? 'selected' : '', isSameDay(day, new Date()) ? 'is-today' : '', actual(day) ? 'is-logged' : '', isWithin(day, stats.nextStart, stats.nextEnd) ? 'is-predicted' : '', nearOvulation ? 'is-ovulation-window' : ''].join(' ')
         const marker = ovulationOffset === 0 ? 'O' : ovulationOffset < 0 ? `${Math.abs(ovulationOffset)} before` : `${ovulationOffset} after`
-        return <button className={classes} key={day.toISOString()} onClick={() => setSelected(day)}><span>{isSameDay(day, new Date()) ? 'Today' : format(day, 'EEEEE')}</span><strong>{format(day, 'd')}</strong>{nearOvulation && <small>{marker}</small>}</button>
+        return <button className={classes} key={day.toISOString()} title={phase.label} onClick={() => setSelected(day)}><span>{isSameDay(day, new Date()) ? 'Today' : format(day, 'EEEEE')}</span><strong>{format(day, 'd')}</strong>{nearOvulation ? <small>{marker}</small> : phase.key === 'pms' ? <small>PMS</small> : null}</button>
       })}</div>
       <button onClick={() => setSelected(addDays(selected, 7))} aria-label="Next week">›</button>
     </div>
@@ -128,6 +139,6 @@ export default function ExpandedCalendar({ logs, settings, onClose, initialDate 
         <small className="expected-note">{patterns.isActual ? 'Details reflect what was saved for this period.' : 'History-based pattern only, not a medical prediction.'}</small>
       </section>
     </main>
-    <footer className="expanded-footer"><span><i className="logged"/>Logged</span><span><i className="predicted"/>Predicted</span><span><i className="ovulation"/>2 days before · Ovulation · 2 days after</span></footer>
+    <footer className="expanded-footer"><span><i className="logged"/>Period</span><span><i className="follicular"/>Follicular</span><span><i className="fertile"/>Fertile</span><span><i className="ovulation"/>Ovulation</span><span><i className="luteal"/>Luteal</span><span><i className="pms"/>PMS</span></footer>
   </div>
 }

@@ -12,6 +12,8 @@ export function Icon({ name, size = 20 }) {
     edit: <><path d="m14 5 5 5M4 20l4-1 11-11-4-4L4 15v5Z"/></>,
     close: <><path d="M6 6l12 12M18 6 6 18"/></>,
     profile: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
+    doctor: <><path d="M12 3v6M9 6h6"/><rect x="4" y="9" width="16" height="11" rx="3"/><path d="M8 14h8M12 12v4"/></>,
+    book: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 1 4 17.5Z"/><path d="M4 17.5A2.5 2.5 0 0 1 6.5 15H20"/></>,
   }
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
 }

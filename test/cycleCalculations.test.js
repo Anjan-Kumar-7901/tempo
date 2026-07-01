@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { cycleLengths, getStats, overlapsLog, periodDuration } from '../src/utils/cycleCalculations.js'
+import { cycleLengths, fertileConfidence, getCyclePhase, getStats, overlapsLog, periodDuration, regularityScore } from '../src/utils/cycleCalculations.js'
 
 const settings = { averageCycleLength: 28, averagePeriodDuration: 5 }
 const logs = [
@@ -39,4 +39,18 @@ test('empty history does not produce a misleading countdown', () => {
 test('overlapping logs are rejected while the edited log is ignored', () => {
   assert.equal(overlapsLog({ startDate: '2026-01-04', endDate: '2026-01-07' }, logs), true)
   assert.equal(overlapsLog({ startDate: '2026-01-01', endDate: '2026-01-05' }, logs, 'a'), false)
+})
+
+test('regularity score rewards consistent cycle lengths', () => {
+  assert.equal(regularityScore([28, 28, 29, 28]), 97)
+  assert.equal(fertileConfidence([28, 28, 29, 28]).label, 'High')
+})
+
+test('cycle phase detects PMS and fertile estimates', () => {
+  const periodPhase = getCyclePhase(new Date('2026-03-28T00:00:00'), logs, settings)
+  const fertilePhase = getCyclePhase(new Date('2026-03-09T00:00:00'), logs, settings)
+  const pmsPhase = getCyclePhase(new Date('2026-03-21T00:00:00'), logs, settings)
+  assert.equal(periodPhase.key, 'period')
+  assert.equal(fertilePhase.key, 'fertile')
+  assert.equal(pmsPhase.key, 'pms')
 })

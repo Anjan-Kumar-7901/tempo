@@ -2,7 +2,7 @@
 
 > **In sync with your body**
 
-TEMPO is a private, offline-first period tracking Progressive Web App. It helps users log periods, understand cycle patterns, review personal trends, and view locally calculated estimates without creating an account or sending cycle data to an external service.
+TEMPO is a private, offline-first period tracking Progressive Web App. It helps users log periods, understand cycle patterns, review personal trends, share a notes-free summary when needed, and view locally calculated estimates without creating an account or sending cycle data to an external service.
 
 ## Highlights
 
@@ -10,13 +10,27 @@ TEMPO is a private, offline-first period tracking Progressive Web App. It helps 
 - Local 4-digit privacy PIN with Web Crypto hashing
 - Automatic lock after inactivity
 - Period logging with flow, pain, mood, symptoms, and notes
-- Monthly and expanded weekly calendar views
-- Estimated next period, ovulation date, and ovulation window
+- Monthly home calendar with clean period, fertile, ovulation, and today markings
+- Expanded weekly calendar with color-coded period, follicular, fertile, ovulation, luteal, and PMS estimate phases
+- Estimated next period, ovulation date, fertile window, and PMS days
+- Fertile window confidence level
+- Cycle regularity score
 - History-based symptom and cycle insights
 - Interactive trend charts
 - Editable period history
+- Partner/doctor safe read-only view that hides private notes
+- Offline educational library with cycle basics, PMS, doctor guidance, myths, and contraception disclaimer
 - Installable offline PWA
 - Responsive mobile-first interface
+
+## Version 2 Features
+
+Version 2 adds a safer sharing flow, richer cycle intelligence, and offline education:
+
+- **Partner/doctor safe view:** A read-only summary screen for appointments or shared review. It includes cycle dates, period duration, flow, pain, mood, symptoms, averages, upcoming estimates, regularity score, and fertile confidence while hiding private notes and edit/delete actions.
+- **Better calendar intelligence:** The home calendar stays simple and uncluttered, while the expanded calendar shows color-coded cycle phases including follicular, fertile, ovulation, luteal, PMS estimate, logged period, and predicted period.
+- **Predictive insights:** TEMPO now calculates PMS estimate days, fertile window confidence, and a cycle regularity score from locally saved history.
+- **Educational library:** Offline articles explain ovulation, PMS, when to consult a doctor, cycle myths, and why TEMPO predictions should not be used as contraception guidance.
 
 ## Privacy
 
@@ -29,7 +43,7 @@ TEMPO does not use:
 - Analytics or advertising trackers
 - Raw PIN storage
 
-Predictions are estimates based on user-entered history. They are not medical advice and should not be used for contraception guidance.
+Predictions, phase labels, fertile confidence, PMS estimates, and regularity scores are estimates based on user-entered history. They are not medical advice and should not be used for contraception guidance.
 
 ## Technology
 
@@ -49,7 +63,7 @@ Predictions are estimates based on user-entered history. They are not medical ad
 src/
   components/   Reusable interface components
   db/           Dexie database configuration
-  pages/        Application screens
+  pages/        Application screens, including safe view and library
   store/        Zustand application store
   utils/        Cycle calculations and PIN utilities
 test/           Calculation and validation tests
@@ -134,4 +148,4 @@ Deployment configuration:
 
 ## Disclaimer
 
-TEMPO is not a medical device. Cycle, period, ovulation, fertile-window, and symptom information displayed by the app is estimated from locally entered data.
+TEMPO is not a medical device. Cycle, period, ovulation, fertile-window, PMS, phase, confidence, regularity, and symptom information displayed by the app is estimated from locally entered data.

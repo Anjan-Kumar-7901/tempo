@@ -1,6 +1,6 @@
 import { addDays, addMonths, eachDayOfInterval, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek, subDays, subMonths } from 'date-fns'
 import { useState } from 'react'
-import { getStats, isWithin } from '../utils/cycleCalculations'
+import { getCyclePhase, getStats, isWithin } from '../utils/cycleCalculations'
 
 export default function CalendarView({ logs, settings, onSelectDate }) {
   const [month, setMonth] = useState(new Date())
@@ -17,8 +17,11 @@ export default function CalendarView({ logs, settings, onSelectDate }) {
     <div className="calendar-grid week">{['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => <span key={`${day}${index}`}>{day}</span>)}</div>
     <div className="calendar-grid">{days.map((day) => {
       const ovulationWindow = stats.ovulation && isWithin(day, subDays(stats.ovulation, 2), addDays(stats.ovulation, 2))
-      const classes = ['day', !isSameMonth(day, month) ? 'muted' : '', logged(day) ? 'logged' : '', isWithin(day, stats.nextStart, stats.nextEnd) ? 'predicted' : '', ovulationWindow ? 'ovulation-window' : '', isSameDay(day, new Date()) ? 'today' : '', stats.ovulation && isSameDay(day, stats.ovulation) ? 'ovulation' : ''].join(' ')
-      return <button type="button" className={classes} key={day.toISOString()} onClick={(event) => { if (!onSelectDate) return; event.stopPropagation(); onSelectDate(day) }}>{format(day, 'd')}</button>
+      const phase = getCyclePhase(day, logs, settings)
+      const hiddenCalendarPhases = ['pms', 'luteal', 'follicular']
+      const calendarPhase = hiddenCalendarPhases.includes(phase.key) ? { key: 'unknown', label: 'Cycle day' } : phase
+      const classes = ['day', `phase-${calendarPhase.key}`, !isSameMonth(day, month) ? 'muted' : '', logged(day) ? 'logged' : '', isWithin(day, stats.nextStart, stats.nextEnd) ? 'predicted' : '', ovulationWindow ? 'ovulation-window' : '', isSameDay(day, new Date()) ? 'today' : '', stats.ovulation && isSameDay(day, stats.ovulation) ? 'ovulation' : ''].join(' ')
+      return <button type="button" className={classes} key={day.toISOString()} title={calendarPhase.label} aria-label={`${format(day, 'MMMM d')}: ${calendarPhase.label}`} onClick={(event) => { if (!onSelectDate) return; event.stopPropagation(); onSelectDate(day) }}>{format(day, 'd')}</button>
     })}</div>
   </div>
 }
